@@ -20,6 +20,40 @@ class ImageProcessor {
     
     init() {}
     
+    //first basic filter
+    //FIXME: Amount implementation only used for rgb filtering. Set separated funcs for differents filters
+    func applyFilter(withAmount amount: Int, inout onImage image: UIImage) {
+        //get image averages
+        self.image = image
+        let averages = getAverageRGB()
+        
+        for y in 0..<rgbImage!.height {
+            for x in 0..<rgbImage!.width {
+                let index = y * rgbImage!.width + x
+                var pixel = rgbImage!.pixels[index]
+                
+                let differences = pixelRGBDiff(fromPixel: pixel, toAverages: averages)
+                let filteredRGB = newRGB(forPixel: pixel, withDifference: differences, averages: averages, amount: amount)
+                
+                //see if has value
+                if let red = filteredRGB[RGB.red.rawValue] {
+                    pixel.red = red
+                }
+                if let green = filteredRGB[RGB.green.rawValue] {
+                    pixel.green = green
+                }
+                if let blue = filteredRGB[RGB.blue.rawValue] {
+                    pixel.blue = blue
+                }
+                
+                rgbImage!.pixels[index] = pixel
+            }
+        }
+        
+        self.image = rgbImage?.toUIImage()
+        image = self.image!
+    }
+    
     private func getAverageRGB() -> [Int]{
         var totalRed = 0
         var totalGreen = 0
@@ -43,39 +77,7 @@ class ImageProcessor {
         
         return [avgRed, avgBlue, avgGreen]
     }
-    
-    //first basic filter
-    func applyFilter(inout onImage image: UIImage) {
-        //get image averages
-        self.image = image
-        let averages = getAverageRGB()
-        
-        for y in 0..<rgbImage!.height {
-            for x in 0..<rgbImage!.width {
-                let index = y * rgbImage!.width + x
-                var pixel = rgbImage!.pixels[index]
-                
-                let differences = pixelRGBDiff(fromPixel: pixel, toAverages: averages)
-                let filteredRGB = newRGB(forPixel: pixel, withDifference: differences, averages: averages)
-                
-                //see if has value
-                if let red = filteredRGB[RGB.red.rawValue] {
-                    pixel.red = red
-                }
-                if let green = filteredRGB[RGB.green.rawValue] {
-                    pixel.green = green
-                }
-                if let blue = filteredRGB[RGB.blue.rawValue] {
-                    pixel.blue = blue
-                }
-                
-                rgbImage!.pixels[index] = pixel
-            }
-        }
-        
-        self.image = rgbImage?.toUIImage()
-        image = self.image!
-    }
+
     
     private func pixelRGBDiff(fromPixel pixel: Pixel, toAverages avgs: [Int]) -> [Int] {
         var differences = [Int]()
@@ -86,22 +88,23 @@ class ImageProcessor {
         return differences
     }
     
-    private func newRGB(forPixel pixel: Pixel, withDifference diff: [Int], averages avgs: [Int]) -> [UInt8?] {
+    private func newRGB(forPixel pixel: Pixel, withDifference diff: [Int], averages avgs: [Int], amount: Int) -> [UInt8?] {
+        //FIXME: Change new value not just multipling but adding, subtracting and dividing
         var newRGB = [UInt8?]()
         if diff[RGB.red.rawValue] > 0 {
-            newRGB.append(UInt8(max(0, min(255, avgs[RGB.red.rawValue] + diff[RGB.red.rawValue] * 5))))
+            newRGB.append(UInt8(max(0, min(255, avgs[RGB.red.rawValue] + diff[RGB.red.rawValue] * amount))))
         }
         else {
             newRGB.append(nil)
         }
         if diff[RGB.green.rawValue] > 0 {
-            newRGB.append(UInt8(max(0, min(255, avgs[RGB.green.rawValue] + diff[RGB.green.rawValue] * 5))))
+            newRGB.append(UInt8(max(0, min(255, avgs[RGB.green.rawValue] + diff[RGB.green.rawValue] * amount))))
         }
         else {
             newRGB.append(nil)
         }
         if diff[RGB.blue.rawValue] > 0 {
-            newRGB.append(UInt8(max(0, min(255, avgs[RGB.blue.rawValue] + diff[RGB.blue.rawValue] * 5))))
+            newRGB.append(UInt8(max(0, min(255, avgs[RGB.blue.rawValue] + diff[RGB.blue.rawValue] * amount))))
         }
         else {
             newRGB.append(nil)
