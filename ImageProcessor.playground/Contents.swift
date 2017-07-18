@@ -5,7 +5,7 @@ import UIKit
 // Process the image!
 var image = UIImage(named: "sample")
 
-UIImage.applyFilter(withAmount: 2, filteringType: .rgb, onImage: &image!)
+UIImage.applyFilter(withAmount: 40, operation: .increase, type: .rgb, onImage: &image!)
 
 image
 
@@ -15,7 +15,7 @@ image
 
 ////brightness////
 //Procedure Truncate(value)
-//If value < 0 Then value = 0
+//If value < 0 Then value =  0
 //If value > 255 Then value = 255
 //Return value
 //EndProcedure
@@ -25,8 +25,3 @@ image
 //newGreen = Truncate(Green(colour) + brightness)
 //newBlue  = Truncate(Blue(colour)  + brightness)
 //PutPixelColour(x, y) = RGB(newRed, newGreen, newBlue)
-
-
-
-
-

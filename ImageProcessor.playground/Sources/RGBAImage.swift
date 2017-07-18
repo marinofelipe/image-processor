@@ -89,4 +89,13 @@ public struct RGBAImage {
         
         return image
     }
+    
+    //MARK: Pixels management
+//    public func getPixels() -> [Pixel] {
+//        return pixels
+//    }
+    
+    public func updatePixels() {
+        
+    }
 }
