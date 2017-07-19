@@ -44,7 +44,22 @@ class ImageProcessor {
     
     //MARK: Filtering operations
     private func updateBrightness(inout onImage image: UIImage) {
+        for (index, _) in rgbImage!.pixels.enumerate() {
+            var r = Int(rgbImage!.pixels[index].red) + amount
+            var g = Int(rgbImage!.pixels[index].green) + amount
+            var b = Int(rgbImage!.pixels[index].blue) + amount
+            
+            verifyIfItsInRange(&r)
+            verifyIfItsInRange(&g)
+            verifyIfItsInRange(&b)
+            
+            rgbImage!.pixels[index].red = UInt8(r)
+            rgbImage!.pixels[index].green = UInt8(g)
+            rgbImage!.pixels[index].blue = UInt8(b)
+        }
         
+        self.image = rgbImage?.toUIImage()
+        image = self.image!
     }
     
     private func updateRGB(inout onImage image: UIImage) {
@@ -132,5 +147,13 @@ class ImageProcessor {
         }
         
         return newRGB
+    }
+    
+    private func verifyIfItsInRange(inout value: Int) {
+        if (value >= 256) {
+            value = 255
+        } else if (value < 0) {
+            value = 0
+        }
     }
 }
