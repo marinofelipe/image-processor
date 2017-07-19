@@ -17,17 +17,15 @@ class ImageProcessor {
             }
         }
     }
-    var filterType: FilterType?
-    var amount: Int = 0
+    var filter: Filter?
     
     init() {}
     
-    func applyFilter(type: FilterType, amount: Int, inout onImage image: UIImage) {
+    func apply(filter: Filter, inout onImage image: UIImage) {
         self.image = image
-        self.filterType = type
-        self.amount = amount
+        self.filter = filter
         
-        if let type = filterType {
+        if let type = filter.type {
             switch type {
             case .brightness:
                 updateBrightness(onImage: &image)
@@ -35,9 +33,9 @@ class ImageProcessor {
             case .rgb:
                 updateRGB(onImage: &image)
                 break
-            case .contrast:
-                updateContrast(onImage: &image)
-                break
+//            case .contrast:
+//                updateContrast(onImage: &image)
+//                break
             }
         }
     }
@@ -45,9 +43,9 @@ class ImageProcessor {
     //MARK: Filtering operations
     private func updateBrightness(inout onImage image: UIImage) {
         for (index, _) in rgbImage!.pixels.enumerate() {
-            var r = Int(rgbImage!.pixels[index].red) + amount
-            var g = Int(rgbImage!.pixels[index].green) + amount
-            var b = Int(rgbImage!.pixels[index].blue) + amount
+            var r = Int(rgbImage!.pixels[index].red) + filter!.intensity!
+            var g = Int(rgbImage!.pixels[index].green) + filter!.intensity!
+            var b = Int(rgbImage!.pixels[index].blue) + filter!.intensity!
             
             verifyIfItsInRange(&r)
             verifyIfItsInRange(&g)
@@ -67,7 +65,7 @@ class ImageProcessor {
         var differences: [Int]
         for (index, pixel) in rgbImage!.pixels.enumerate() {
             differences = pixelRGBDiff(fromPixel: pixel, toAverages: averages)
-            let filteredRGB = newRGB(forPixel: pixel, withDifference: differences, averages: averages, amount: amount)
+            let filteredRGB = newRGB(forPixel: pixel, withDifference: differences, averages: averages, amount: filter!.intensity!)
             
             //
             if let red = filteredRGB[RGB.red.rawValue] {

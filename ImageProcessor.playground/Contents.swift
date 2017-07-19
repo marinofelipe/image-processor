@@ -5,12 +5,18 @@ import UIKit
 // Process the image!
 var image = UIImage(named: "sample")
 
-UIImage.applyFilter(withAmount: 10, operation: .increase, type: .rgb, onImage: &image!)
-
+//brightness
+var filter = Filter(type: .brightness, intensity: -100)
+UIImage.apply(filter, onImage: &image!)
 image
 
-//brightness
-UIImage.applyFilter(withAmount: -100, operation: .increase, type: .brightness, onImage: &image!)
+filter = Filter(type: .brightness, intensity: 150)
+UIImage.apply(filter, onImage: &image!)
+image
 
+
+//rgb 
+filter = Filter(type: .rgb, intensity: 35)
+UIImage.apply(filter, onImage: &image!)
 image
 
