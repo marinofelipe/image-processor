@@ -7,8 +7,8 @@ public enum FilteringType: String {
 }
 
 public struct Filter {
-    let type: FilteringType?
-    let intensity: Int?
+    let type: FilteringType
+    let intensity: Int
     
     public init(type: FilteringType, intensity: Int) {
         self.type = type

@@ -8,7 +8,7 @@ public enum RGB: Int {
 }
 
 class ImageProcessor {
-    
+    //MARK: Properties and
     var rgbImage: RGBAImage?
     var image: UIImage? {
         didSet {
@@ -17,35 +17,36 @@ class ImageProcessor {
             }
         }
     }
-    var filter: Filter?
+    var filters: [Filter]
     
-    init() {}
+    required init(filters: [Filter]) {
+        self.filters = filters
+    }
     
-    func apply(filter: Filter, inout onImage image: UIImage) {
+    //MARK: Aplly filter method
+    func applyFilters(inout onImage image: UIImage) {
+        for filter in filters {
         self.image = image
-        self.filter = filter
-        
-        if let type = filter.type {
-            switch type {
+            switch filters[0].type {
             case .brightness:
-                updateBrightness(onImage: &image)
+                updateBrightness(onImage: &image, intensity: filter.intensity)
                 break
             case .rgb:
-                updateRGB(onImage: &image)
+                updateRGB(onImage: &image, intensity: filter.intensity)
                 break
-//            case .contrast:
-//                updateContrast(onImage: &image)
-//                break
+                //            case .contrast:
+                //                updateContrast(onImage: &image)
+                //                break
             }
         }
     }
     
     //MARK: Filtering operations
-    private func updateBrightness(inout onImage image: UIImage) {
+    private func updateBrightness(inout onImage image: UIImage, intensity: Int) {
         for (index, _) in rgbImage!.pixels.enumerate() {
-            var r = Int(rgbImage!.pixels[index].red) + filter!.intensity!
-            var g = Int(rgbImage!.pixels[index].green) + filter!.intensity!
-            var b = Int(rgbImage!.pixels[index].blue) + filter!.intensity!
+            var r = Int(rgbImage!.pixels[index].red) + intensity
+            var g = Int(rgbImage!.pixels[index].green) + intensity
+            var b = Int(rgbImage!.pixels[index].blue) + intensity
             
             verifyIfItsInRange(&r)
             verifyIfItsInRange(&g)
@@ -56,16 +57,15 @@ class ImageProcessor {
             rgbImage!.pixels[index].blue = UInt8(b)
         }
         
-        self.image = rgbImage?.toUIImage()
-        image = self.image!
+        image = (rgbImage?.toUIImage())!
     }
     
-    private func updateRGB(inout onImage image: UIImage) {
+    private func updateRGB(inout onImage image: UIImage, intensity: Int) {
         let averages = getAverageRGB()
         var differences: [Int]
         for (index, pixel) in rgbImage!.pixels.enumerate() {
             differences = pixelRGBDiff(fromPixel: pixel, toAverages: averages)
-            let filteredRGB = newRGB(forPixel: pixel, withDifference: differences, averages: averages, amount: filter!.intensity!)
+            let filteredRGB = newRGB(forPixel: pixel, withDifference: differences, averages: averages, amount: intensity)
             
             //
             if let red = filteredRGB[RGB.red.rawValue] {
@@ -79,8 +79,7 @@ class ImageProcessor {
             }
         }
         
-        self.image = rgbImage?.toUIImage()
-        image = self.image!
+        image = (rgbImage?.toUIImage())!
     }
     
     private func updateContrast(inout onImage image: UIImage) {

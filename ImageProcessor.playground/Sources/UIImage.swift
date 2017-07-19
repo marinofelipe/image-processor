@@ -1,16 +1,9 @@
 import Foundation
 import UIKit
 
-public enum FilterType: Int {
-    case brightness = 0
-    case rgb = 1
-    case contrast = 2
-}
-
 public extension UIImage {
-    
-    static func apply(filter: Filter, inout onImage image: UIImage) {
-        let imageProcessor = ImageProcessor()
-        imageProcessor.apply(filter, onImage: &image)
+    static func apply(filters: [Filter], inout onImage image: UIImage) {
+        let imageProcessor = ImageProcessor(filters: filters)
+        imageProcessor.applyFilters(onImage: &image)
     }
 }
