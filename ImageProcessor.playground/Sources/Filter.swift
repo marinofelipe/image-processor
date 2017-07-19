@@ -7,9 +7,11 @@ public enum FilteringType: String {
 }
 
 public enum PreDefinedFilters: String {
-    case addBrightnessBy80 = "increaseBrightnessBy80"
+    case increaseBrightnessBy80 = "increaseBrightnessBy80"
+    case increaseBrightnessBy150 = "decreaseBrightnessBy150"
     case reduceBrightnessBy90 = "decreaseBrightnessBy90"
-    case addRgbBy20 = "addRgbBy20"
+    case increaseRgbBy20 = "addRgbBy20"
+    case reduceRgbBy35 = "addRgbBy35"
 }
 
 public class Filter {
@@ -23,14 +25,20 @@ public class Filter {
     
     public convenience init(predefinedFilter: PreDefinedFilters) {
         switch predefinedFilter {
-        case .addBrightnessBy80:
+        case .increaseBrightnessBy80:
             self.init(type: .brightness, intensity: 80)
+            break
+        case .increaseBrightnessBy150:
+            self.init(type: .brightness, intensity: 150)
             break
         case .reduceBrightnessBy90:
             self.init(type: .brightness, intensity: -90)
             break
-        case .addRgbBy20:
+        case .increaseRgbBy20:
             self.init(type: .rgb, intensity: 20)
+            break
+        case .reduceRgbBy35:
+            self.init(type: .rgb, intensity: -35)
             break
         }
     }

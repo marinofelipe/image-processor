@@ -7,11 +7,11 @@ var image = UIImage(named: "sample")
 image
 
 //brightness
-let increaseBrightness = Filter(predefinedFilter: .addBrightnessBy80)
+let increaseBrightness = Filter(predefinedFilter: .increaseBrightnessBy80)
 let reduceBrightness = Filter(predefinedFilter: .reduceBrightnessBy90)
 
 //rgb 
-let increaseRGB = Filter(predefinedFilter: .addRgbBy20)
+let increaseRGB = Filter(predefinedFilter: .increaseRgbBy20)
 
 let filters = [reduceBrightness, increaseBrightness, increaseRGB]
 
